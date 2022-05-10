@@ -2,13 +2,210 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>myFlix</title>
 		<meta name="description" content="myFlix"/>
 	</head>
 
-    <h3>How to Use This API</h3>
+	<body>
+		<nav class="navbar navbar-light bg-light">
+			<span class="navbar-text">
+				<h3>How to Use This API</h3>
+			<br>
+				<p>This web application will provide users with access to information about different movies, 
+					directors, and genres. Users will be able to sign up, update their personal information, 
+					and create a list of their favorite movies.</p>
+			</span>
+		  </nav>
+		
+		  <table class="table table-bordered">
 
-    <p>This web application will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favorite movies.</p>
+			<thead>
+			  <tr>
+				<th scope="col">Description</th>
+				<th scope="col">URL</th>
+				<th scope="col">HTTP Method</th>
+				<th scope="col">Query Parameter</th>
+				<th scope="col">Request</th>
+				<th scope="col">Response</th>
+			  </tr>
+			</thead>
 
+			<tbody>
+			  <tr>
+				<th>Return a list of all movies to the user</th>
+				<td>/movies</td>
+				<td>GET</td>
+				<td>None</td>
+				<td>None</td>
+				<td>A JSON object holding data about all movies</td>
+			  </tr>
+
+			  <tr>
+				<th>Return data about a single movie by title to the user</th>
+				<td>/movies/[Title]</td>
+				<td>GET</td>
+				<td>:title</td>
+				<td>None</td>
+				<td>A JSON object holding data about a single movie, structured like:
+					<pre>
+						<code>
+{
+	title: 'Soul',
+	director: {
+		name: 'Pete Docter',
+		description: 'Peter Hans Docter is...',
+		birthDate: 'October 9, 1968'
+	},
+	releaseDate: 'October 11, 2020',
+	genre: {
+		name: 'Animation',
+		description: 'Animation is...'
+	}
+}
+						</code>
+					</pre>
+				</td>
+			  </tr>
+
+			  <tr>
+				<th>Return data about a genre by title</th>
+				<td>/movies/genre/[Genre]</td>
+				<td>GET</td>
+				<td>:genreName</td>
+				<td>None</td>
+				<td> A JSON object holding data about the selected genre, structured like:
+					<pre>
+						<code>
+{
+	name: 'Animation',
+	description: 'Animation is...'
+}
+						</code>
+					</pre>
+				</td>
+				</td>
+			  </tr>
+
+			  <tr>
+				<th>Return data about a director by name</th>
+				<td>/movies/directors/[Director]</td>
+				<td>GET</td>
+				<td>:directorName</td>
+				<td>None</td>
+				<td> A JSON object holding data about the selected director, structured like:
+					<pre>
+						<code>
+{
+	name: 'Pete Docter',
+	description: 'Peter Hans Docter is...',
+	birthDate: 'October 9, 1968'
+}
+						</code>
+					</pre>
+				</td>
+			  </tr>
+
+			  <tr>
+				<th>Allow new users to register</th>
+				<td>/users</td>
+				<td>POST</td>
+				<td>None</td>
+				<td>A JSON object holding data just created by user, structured like:
+					<pre>
+						<code>
+{
+	name: 'John Smith',
+	usersMovies: ['High School Musical'],
+}
+						</code>
+					</pre>
+				</td>
+				<td>A JSON object holding data just created by user with newly added ID, structured like:
+					<pre>
+						<code>
+{
+	name: 'John Smith',
+	usersMovies: ['High School Musical'],
+	id: 1
+}
+						</code>
+					</pre>
+				</td>
+			  </tr>
+
+			  <tr>
+				<th>Allow users to update their user info (such as their name)</th>
+				<td>/users/[ID]</td>
+				<td>PUT</td>
+				<td>:id</td>
+				<td>A JSON object holding data with user info, structured like:
+					<pre>
+						<code>
+{
+	name: 'John Smith',
+	usersMovies: ['High School Musical'],
+	id: 1
+}
+						</code>
+					</pre>
+				</td>
+				<td>A JSON object holding data with updated user info, structured like:
+					<pre>
+						<code>
+{
+	name: 'John Smith Updated',
+	usersMovies: ['High School Musical'],
+	id: 1
+}
+						</code>
+					</pre>
+				</td>
+			  </tr>
+
+			  <tr>
+				<th>Allow users to add a movie to their list of favorites</th>
+				<td>/users/[id]/[movieTitle]</td>
+				<td>POST</td>
+				<td>:id/:movieTitle</td>
+				<td>A JSON object holding data about movie to add:
+					<pre>
+						<code>
+{
+	name: 'John Smith',
+	usersMovies: ['High School Musical'],
+	id: 1
+}
+						</code>
+					</pre>
+				</td>
+				<td>A message indicating whether movie was successfully added to user's list.</td>
+			  </tr>
+
+			  <tr>
+				<th>Allow users to remove a movie from their list of favorites</th>
+				<td>/users/[id]/[movieTitle]</td>
+				<td>DELETE</td>
+				<td>:id/:movieTitle</td>
+				<td>None</td>
+				<td>A message indicating whether movie was successfully removed from user's list.</td>
+			  </tr>
+			  
+			  <tr>
+				<th>Allow existing users to deregister</th>
+				<td>/users/[id]</td>
+				<td>DELETE</td>
+				<td>:id</td>
+				<td>None</td>
+				<td>A message indicating whether user was successfully deleted.</td>
+			  </tr>
+			</tbody>
+		  </table>
+		
+	
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	</body>
 </html>
