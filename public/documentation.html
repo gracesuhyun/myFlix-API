@@ -6,6 +6,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>myFlix</title>
 		<meta name="description" content="myFlix"/>
+
+		<style>
+			table {
+				max-width: 85%;
+				margin: auto;
+			}
+		</style>
+
 	</head>
 
 	<body>
@@ -19,7 +27,7 @@
 			</span>
 		  </nav>
 		
-		  <table class="table table-bordered">
+		  <table class="table table-bordered table-hover align-middle">
 
 			<thead>
 			  <tr>
@@ -46,23 +54,26 @@
 				<th>Return data about a single movie by title to the user</th>
 				<td>/movies/[Title]</td>
 				<td>GET</td>
-				<td>:title</td>
+				<td>:Title</td>
 				<td>None</td>
 				<td>A JSON object holding data about a single movie, structured like:
 					<pre>
 						<code>
 {
-	title: 'Soul',
-	director: {
-		name: 'Pete Docter',
-		description: 'Peter Hans Docter is...',
-		birthDate: 'October 9, 1968'
-	},
-	releaseDate: 'October 11, 2020',
-	genre: {
-		name: 'Animation',
-		description: 'Animation is...'
-	}
+	Title: '',
+    Description: '',
+    Genre: {
+        name: '',
+        description: ''
+    },
+    Director: {
+        name: '',
+        description: ''
+    },
+    ReleaseDate: '',
+    Actors: [],
+    ImagePath: '',
+    Featured: ''
 }
 						</code>
 					</pre>
@@ -70,17 +81,17 @@
 			  </tr>
 
 			  <tr>
-				<th>Return data about a genre by title</th>
-				<td>/movies/genre/[Genre]</td>
+				<th>Return data about a genre by name</th>
+				<td>/genre/[Genre]</td>
 				<td>GET</td>
-				<td>:genreName</td>
+				<td>:Genre</td>
 				<td>None</td>
 				<td> A JSON object holding data about the selected genre, structured like:
 					<pre>
 						<code>
 {
-	name: 'Animation',
-	description: 'Animation is...'
+	name: '',
+	description: ''
 }
 						</code>
 					</pre>
@@ -90,17 +101,16 @@
 
 			  <tr>
 				<th>Return data about a director by name</th>
-				<td>/movies/directors/[Director]</td>
+				<td>/directors/[Director]</td>
 				<td>GET</td>
-				<td>:directorName</td>
+				<td>:Director</td>
 				<td>None</td>
 				<td> A JSON object holding data about the selected director, structured like:
 					<pre>
 						<code>
 {
-	name: 'Pete Docter',
-	description: 'Peter Hans Docter is...',
-	birthDate: 'October 9, 1968'
+	name: '',
+	description: ''
 }
 						</code>
 					</pre>
@@ -116,8 +126,12 @@
 					<pre>
 						<code>
 {
-	name: 'John Smith',
-	usersMovies: ['High School Musical'],
+	Name: '',
+	Username: '',
+	Password: '',
+	Email: '',
+	Birthday: '',
+	FavoriteMovies: []
 }
 						</code>
 					</pre>
@@ -126,9 +140,13 @@
 					<pre>
 						<code>
 {
-	name: 'John Smith',
-	usersMovies: ['High School Musical'],
-	id: 1
+	_id: '',
+	Name: '',
+	Username: '',
+	Password: '',
+	Email: '',
+	Birthday: '',
+	FavoriteMovies: []
 }
 						</code>
 					</pre>
@@ -137,16 +155,19 @@
 
 			  <tr>
 				<th>Allow users to update their user info (such as their name)</th>
-				<td>/users/[ID]</td>
+				<td>/users/[Username]</td>
 				<td>PUT</td>
-				<td>:id</td>
+				<td>:Username</td>
 				<td>A JSON object holding data with user info, structured like:
 					<pre>
 						<code>
 {
-	name: 'John Smith',
-	usersMovies: ['High School Musical'],
-	id: 1
+	Name: '',
+	Username: '',
+	Password: '',
+	Email: '',
+	Birthday: '',
+	FavoriteMovies: []
 }
 						</code>
 					</pre>
@@ -155,9 +176,13 @@
 					<pre>
 						<code>
 {
-	name: 'John Smith Updated',
-	usersMovies: ['High School Musical'],
-	id: 1
+	_id: '',
+	Name: 'updated',
+	Username: 'updated',
+	Password: 'updated',
+	Email: 'updated',
+	Birthday: 'updated',
+	FavoriteMovies: []
 }
 						</code>
 					</pre>
@@ -166,37 +191,28 @@
 
 			  <tr>
 				<th>Allow users to add a movie to their list of favorites</th>
-				<td>/users/[id]/[movieTitle]</td>
+				<td>/users/[Username]/movies/[Title]</td>
 				<td>POST</td>
-				<td>:id/:movieTitle</td>
-				<td>A JSON object holding data about movie to add:
-					<pre>
-						<code>
-{
-	name: 'John Smith',
-	usersMovies: ['High School Musical'],
-	id: 1
-}
-						</code>
-					</pre>
+				<td>:Username, :Title</td>
+				<td>None
 				</td>
 				<td>A message indicating whether movie was successfully added to user's list.</td>
 			  </tr>
 
 			  <tr>
 				<th>Allow users to remove a movie from their list of favorites</th>
-				<td>/users/[id]/[movieTitle]</td>
+				<td>/users/[Username]/movies/[Title]</td>
 				<td>DELETE</td>
-				<td>:id/:movieTitle</td>
+				<td>:Username, :Title</td>
 				<td>None</td>
 				<td>A message indicating whether movie was successfully removed from user's list.</td>
 			  </tr>
 			  
 			  <tr>
 				<th>Allow existing users to deregister</th>
-				<td>/users/[id]</td>
+				<td>/users/[Username]</td>
 				<td>DELETE</td>
-				<td>:id</td>
+				<td>:Username</td>
 				<td>None</td>
 				<td>A message indicating whether user was successfully deleted.</td>
 			  </tr>
