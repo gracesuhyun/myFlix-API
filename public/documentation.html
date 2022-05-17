@@ -6,14 +6,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>myFlix</title>
 		<meta name="description" content="myFlix"/>
-
-		<style>
-			table {
-				max-width: 85%;
-				margin: auto;
-			}
-		</style>
-
 	</head>
 
 	<body>
@@ -27,7 +19,7 @@
 			</span>
 		  </nav>
 		
-		  <table class="table table-bordered table-hover align-middle">
+		  <table class="table table-bordered table-hover">
 
 			<thead>
 			  <tr>
@@ -81,6 +73,15 @@
 			  </tr>
 
 			  <tr>
+				<th>Return data about a movie's genre by title</th>
+				<td>/movies/genre/[Title]</td>
+				<td>GET</td>
+				<td>:Title</td>
+				<td>None</td>
+				<td> A text message that explains what the genre of the movie is. For example: "[Movie Title] is a [Genre Name]. [Genre Name] is...."</td></td>
+			  </tr>
+
+			  <tr>
 				<th>Return data about a genre by name</th>
 				<td>/genre/[Genre]</td>
 				<td>GET</td>
@@ -110,7 +111,9 @@
 						<code>
 {
 	name: '',
-	description: ''
+	description: '',
+	dateOfBirth: '',
+	dateOfDeath: ''
 }
 						</code>
 					</pre>
@@ -126,11 +129,11 @@
 					<pre>
 						<code>
 {
-	Name: '',
-	Username: '',
-	Password: '',
-	Email: '',
 	Birthday: '',
+	Email: '',
+	Name: '',
+	Password: '',
+	Username: '',
 	FavoriteMovies: []
 }
 						</code>
@@ -141,11 +144,11 @@
 						<code>
 {
 	_id: '',
-	Name: '',
-	Username: '',
-	Password: '',
-	Email: '',
 	Birthday: '',
+	Email: '',
+	Name: '',
+	Password: '',
+	Username: '',
 	FavoriteMovies: []
 }
 						</code>
@@ -196,7 +199,21 @@
 				<td>:Username, :Title</td>
 				<td>None
 				</td>
-				<td>A message indicating whether movie was successfully added to user's list.</td>
+				<td>A JSON object holding data with newly added movie(s), structured like:
+					<pre>
+						<code>
+{
+	_id: '',
+	Name: '',
+	Username: '',
+	Password: '',
+	Email: '',
+	Birthday: '',
+	FavoriteMovies: ['updated']
+}
+						</code>
+					</pre>
+				</td>
 			  </tr>
 
 			  <tr>
@@ -205,7 +222,21 @@
 				<td>DELETE</td>
 				<td>:Username, :Title</td>
 				<td>None</td>
-				<td>A message indicating whether movie was successfully removed from user's list.</td>
+				<td>A JSON object holding data with chosen movie(s) removed, structured like:
+					<pre>
+						<code>
+{
+	_id: '',
+	Name: '',
+	Username: '',
+	Password: '',
+	Email: '',
+	Birthday: '',
+	FavoriteMovies: []
+}
+						</code>
+					</pre>
+				</td>
 			  </tr>
 			  
 			  <tr>
