@@ -46,7 +46,7 @@
 				<th>Return data about a single movie by title to the user</th>
 				<td>/movies/[Title]</td>
 				<td>GET</td>
-				<td>:Title</td>
+				<td>/movies/:Title</td>
 				<td>None</td>
 				<td>A JSON object holding data about a single movie, structured like:
 					<pre>
@@ -76,7 +76,7 @@
 				<th>Return data about a movie's genre by title</th>
 				<td>/movies/genre/[Title]</td>
 				<td>GET</td>
-				<td>:Title</td>
+				<td>/movies/genre/:Title</td>
 				<td>None</td>
 				<td> A text message that explains what the genre of the movie is. For example: "[Movie Title] is a [Genre Name]. [Genre Name] is...."</td></td>
 			  </tr>
@@ -85,7 +85,7 @@
 				<th>Return data about a genre by name</th>
 				<td>/genre/[Genre]</td>
 				<td>GET</td>
-				<td>:Genre</td>
+				<td>/genre/:Genre</td>
 				<td>None</td>
 				<td> A JSON object holding data about the selected genre, structured like:
 					<pre>
@@ -104,7 +104,7 @@
 				<th>Return data about a director by name</th>
 				<td>/directors/[Director]</td>
 				<td>GET</td>
-				<td>:Director</td>
+				<td>/directors/:Director</td>
 				<td>None</td>
 				<td> A JSON object holding data about the selected director, structured like:
 					<pre>
@@ -160,7 +160,7 @@
 				<th>Allow users to update their user info (such as their name)</th>
 				<td>/users/[Username]</td>
 				<td>PUT</td>
-				<td>:Username</td>
+				<td>/users/:Username</td>
 				<td>A JSON object holding data with user info, structured like:
 					<pre>
 						<code>
@@ -196,7 +196,7 @@
 				<th>Allow users to add a movie to their list of favorites</th>
 				<td>/users/[Username]/movies/[Title]</td>
 				<td>POST</td>
-				<td>:Username, :Title</td>
+				<td>/users/:Username/movies/:Title</td>
 				<td>None
 				</td>
 				<td>A JSON object holding data with newly added movie(s), structured like:
@@ -220,7 +220,7 @@
 				<th>Allow users to remove a movie from their list of favorites</th>
 				<td>/users/[Username]/movies/[Title]</td>
 				<td>DELETE</td>
-				<td>:Username, :Title</td>
+				<td>/users/:Username/movies/:Title</td>
 				<td>None</td>
 				<td>A JSON object holding data with chosen movie(s) removed, structured like:
 					<pre>
@@ -243,7 +243,7 @@
 				<th>Allow existing users to deregister</th>
 				<td>/users/[Username]</td>
 				<td>DELETE</td>
-				<td>:Username</td>
+				<td>/users/:Username</td>
 				<td>None</td>
 				<td>A message indicating whether user was successfully deleted.</td>
 			  </tr>
