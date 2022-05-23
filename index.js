@@ -1,28 +1,18 @@
-const cors = require('cors');
-
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));
-
 const express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
     uuid = require('uuid'),
     mongoose = require('mongoose'),
     Models = require('./models.js'),
-    app = express();
+    app = express(),
+    { check, validationResult } = require('express-validator');
 
 const Movies = Models.Movie;
 const Users = Models.User;
+const Genres = Models.Genre;
+
+const cors = require('cors');
+app.use(cors());
 
 app.use(express.static('public'));
 app.use(morgan('common'));
@@ -72,18 +62,19 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
 
 // Return data about a genre by movie title
 app.get('/movies/genre/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Movies.findOne({ Title: req.params.Title }).then((movies) => {
-        if (movies) {
-          res.status(200).send(`${req.params.Title} is a ${movies.Genre.name} movie. <br> ${movies.Genre.description}`);
-        } else {
-          res.status(400).send('Movie not Found');
-        }
-    });
+    Movies.findOne({ Title: req.params.Title })
+      .then((movies) => {
+          if (movies) {
+            res.status(200).send(`${req.params.Title} is a ${movies.Genre.name} movie. <br> ${movies.Genre.description}`);
+          } else {
+            res.status(400).send('Movie not Found');
+          }
+      });
 });
 
 // Return data about a genre by name
 app.get('/genre/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Movies.findOne({ 'Genre.Name': req.params.name })
+    Movies.findOne({ 'Genre.name': req.params.Name })
       .then((movie) => {
           res.json(movie.Genre);
       })
@@ -95,7 +86,7 @@ app.get('/genre/:Name', passport.authenticate('jwt', { session: false }), (req, 
 
 // Return data about a director by name
 app.get('/directors/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
-    Movies.findOne({ 'Director.Name': req.params.name }).then((movies) => {
+    Movies.findOne({ 'Director.name': req.params.Name }).then((movies) => {
         if (movies) {
           res.status(200).json(movies.Director);
         } else {
@@ -130,30 +121,53 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 
 
 // Create user; allow new users to register
-app.post('/users', (req, res) => {
-  Users.findOne({Username: req.body.Username})
+app.post('/users',
+  // Validation logic here for request
+  //you can either use a chain of methods like .not().isEmpty()
+  //which means "opposite of isEmpty" in plain english "is not empty"
+  //or use .isLength({min: 5}) which means
+  //minimum value of 5 characters are only allowed
+  [
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], (req, res) => {
+
+  // check validation object for errors
+  //if error occurs, rest of code will not execute, keeping database safe from potentially malicious code
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
+    Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
       .then((user) => {
-          if (user) {
-              return res.status(400).send(req.body.Username + ' already exists');
-          } else {
-              Users.create({
-                  Username: req.body.Username,
-                  Password: req.body.Password,
-                  Email: req.body.Email,
-                  Birthday: req.body.Birthday
-              })
-              .then((user) => {res.status(201).json(user) })
-              .catch((error) => {
-                  console.error(error);
-                  res.status(500).send('Error: ' + error);
-              })
-          }
+        if (user) {
+          //If the user is found, send a response that it already exists
+          return res.status(400).send(req.body.Username + ' already exists');
+        } else {
+          Users
+            .create({
+              Username: req.body.Username,
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            })
+            .then((user) => { res.status(201).json(user) })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            });
+        }
       })
       .catch((error) => {
-          console.error(error);
-          res.status(500).send('Error: ' + error);
+        console.error(error);
+        res.status(500).send('Error: ' + error);
       });
-});
+  });
 
 // Allow users to update their user info
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -234,6 +248,7 @@ app.use((err, req, res, next) => {
 
   
 // listen for requests
-app.listen(8080, () => {
-    console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
