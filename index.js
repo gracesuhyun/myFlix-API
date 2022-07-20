@@ -11,8 +11,8 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const Genres = Models.Genre;
 
-const cors = require('cors');
-app.use(cors());
+// const cors = require('cors');
+// app.use(cors());
 
 app.use(express.static('public'));
 app.use(morgan('common'));
