@@ -120,53 +120,94 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 });
 
 
-// Create user; allow new users to register
 app.post('/users',
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means minimum value of 5 characters are only allowed
-  [
-    check('username', 'Username is required').isLength({min: 5}),
-    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('password', 'Password is required').not().isEmpty(),
-    check('email', 'Email does not appear to be valid').isEmail()
-  ], (req, res) => {
-
-  // check validation object for errors
-  //if error occurs, rest of code will not execute, keeping database safe from potentially malicious code
+    // Validation logic request
+    // you can either use a chain of methods like .not().isEmpty()
+    // which means "opposite of isEmpty" in plain English "is not empty"
+    // or use .isLength({min: 5}) which means
+    // minimum value of 5 characters are only allowed
+    [
+      check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+      check('Password', 'Password is required.').not().isEmpty(),
+      check('Email', 'Email does not appear to be valid.').isEmail()
+    ], (req, res) => {
+    // check the validation object for errors
     let errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+    if(!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array()});
     }
-
     let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
-      .then((user) => {
-        if (user) {
-          //If the user is found, send a response that it already exists
-          return res.status(400).send(req.body.Username + ' already exists');
-        } else {
-          Users
-            .create({
-              Username: req.body.Username,
-              Password: hashedPassword,
-              Email: req.body.Email,
-              Birthday: req.body.Birthday
-            })
-            .then((user) => { res.status(201).json(user) })
-            .catch((error) => {
-              console.error(error);
-              res.status(500).send('Error: ' + error);
-            });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send('Error: ' + error);
-      });
-  });
+        .then((user) => {
+            if (user) { //If the user is found, send a response that it already exists
+                return res.status(400).send(req.body.Username + 'already exists.');
+            } else {
+              Users
+                .create({
+                    Username: req.body.Username,
+                    Password: hashedPassword,
+                    Email: req.body.Email,
+                    Birthday: req.body.Birthday
+                })
+                .then((user) => { res.status(201).json(user) })
+                .catch((error) => {
+                    console.error(error);
+                    res.status(500).send('Error: ' + error);
+                });
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+    });
+});
+
+// Create user; allow new users to register
+// app.post('/users',
+//   // Validation logic here for request
+//   //you can either use a chain of methods like .not().isEmpty()
+//   //which means "opposite of isEmpty" in plain english "is not empty"
+//   //or use .isLength({min: 5}) which means minimum value of 5 characters are only allowed
+//   [
+//     check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+//     check('password', 'Password is required').not().isEmpty(),
+//     check('email', 'Email does not appear to be valid').isEmail()
+//   ], (req, res) => {
+
+//   // check validation object for errors
+//   //if error occurs, rest of code will not execute, keeping database safe from potentially malicious code
+//     let errors = validationResult(req);
+
+//     if (!errors.isEmpty()) {
+//       return res.status(422).json({ errors: errors.array() });
+//     }
+
+//     let hashedPassword = Users.hashPassword(req.body.Password);
+//     Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+//       .then((user) => {
+//         if (user) {
+//           //If the user is found, send a response that it already exists
+//           return res.status(400).send(req.body.Username + ' already exists');
+//         } else {
+//           Users
+//             .create({
+//               Username: req.body.Username,
+//               Password: hashedPassword,
+//               Email: req.body.Email,
+//               Birthday: req.body.Birthday
+//             })
+//             .then((user) => { res.status(201).json(user) })
+//             .catch((error) => {
+//               console.error(error);
+//               res.status(500).send('Error: ' + error);
+//             });
+//         }
+//       })
+//       .catch((error) => {
+//         console.error(error);
+//         res.status(500).send('Error: ' + error);
+//       });
+//   });
 
 // Allow users to update their user info
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
