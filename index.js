@@ -1,3 +1,6 @@
+const cors = require('cors');
+app.use(cors());
+
 const express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
@@ -10,9 +13,6 @@ const express = require('express'),
 const Movies = Models.Movie;
 const Users = Models.User;
 const Genres = Models.Genre;
-
-const cors = require('cors');
-app.use(cors());
 
 app.use(express.static('public'));
 app.use(morgan('common'));
@@ -125,8 +125,7 @@ app.post('/users',
   // Validation logic here for request
   //you can either use a chain of methods like .not().isEmpty()
   //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
+  //or use .isLength({min: 5}) which means minimum value of 5 characters are only allowed
   [
     check('username', 'Username is required').isLength({min: 5}),
     check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
