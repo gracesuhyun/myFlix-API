@@ -17,19 +17,19 @@ let generateJWTToken = (user) => {
 
 module.exports = (router) => {
     router.post('/login', (req, res) => {
-        passport.authenticate('local', {session: false}, (error, user, info) => {
-            if (error || !user) {
+        passport.authenticate('local', {session: false}, (error, Username, info) => {
+            if (error || !Username) {
                 return res.status(400).json({
                     message: 'Something broke',
-                    user: user
+                    Username: Username
                 });
             }
-            req.login(user, {session: false}, (error) => {
+            req.login(Username, {session: false}, (error) => {
                 if (error) {
                     res.send(error);
                 }
-                let token = generateJWTToken(user.toJSON());
-                return res.json({user, token});
+                let token = generateJWTToken(Username.toJSON());
+                return res.json({Username, token});
             });
         })(req, res);
     });
