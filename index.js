@@ -1,5 +1,4 @@
 const cors = require('cors');
-app.use(cors());
 
 const express = require('express'),
     morgan = require('morgan'),
@@ -14,6 +13,7 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const Genres = Models.Genre;
 
+app.use(cors());
 app.use(express.static('public'));
 app.use(morgan('common'));
 app.use(bodyParser.json()); 
