@@ -24,7 +24,7 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport'); 
 
-mongoose.connect('mongodb+srv://testuser:TestUser@myflixdb.d5y2zjb.mongodb.net/test', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://testuser:TestUser@myflixdb.d5y2zjb.mongodb.net/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 // READ
