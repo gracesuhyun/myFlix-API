@@ -24,6 +24,8 @@ let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport'); 
 
+require('dotenv').config();
+
 mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
